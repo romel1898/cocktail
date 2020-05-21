@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<title>Prepara lo que quieras</title>
+</head>
+<style>
+	*{
+		padding: 0px;
+		margin: 0px;
+	}
+	body{
+		background:linear-gradient(#2193b0,#6dd5ed);
+		font-family: 'Roboto', sans-serif;
+	}
+	.container{
+		background: white;
+		box-shadow:1px 1px 10px rgba(2,2,2,.5);
+		text-align: center;
+		padding: 10px;
+	}
+	img{
+		width: 500px;
+		height: 500px;
+		max-width: 100%;
+		margin-bottom: 10px;
+	}
+	 li{
+		font-size:15px;
+		text-align:center;
+	}
+</style>
+<body>
+	<div class="container">
+	<h1>Busca tu trago</h1>
+	<input type="text" id="buscador">
+	<button onclick="buscar()">Buscar</button>
+	<h1 id="drinkName">Buscando</h1>
+	<h2>Instrucciones</h2>
+	<p id="instructions"></p>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+<script>
+	$(document).ready(function(){
+		$("#buscador").on('keydown',function(e){
+			if(e.which == 13){
+				cargar();
+			};
+		});
+	});	
+	function buscar(){
+		cargar();
+		
+	};
+	buscar();
+	function cargar(){
+	let container=document.getElementById("container");
+	let buscador=document.querySelector("input").value;
+	fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${buscador}`)
+	.then(data => data.json())
+	.then(coktails =>{
+		let drink=coktails.drinks;
+		drink.map(()=>{
+			document.getElementById('drinkName').innerHTML=drink[0].strDrink + "<br>"; 
+			let img=document.createElement('img');
+			img.src=drink[0].strDrinkThumb;
+			document.getElementById('drinkName').appendChild(img);
+			let ingrediente=document.createElement("h2");
+				ingrediente.innerHTML="Ingredientes";
+			document.getElementById('drinkName').appendChild(ingrediente);
+			document.getElementById("instructions").innerHTML=drink[0].strInstructions;
+			for(let i=1; i < 16 ;i++){
+
+				if (drink[0][`strIngredient${i}`] == null) {
+					break;
+				};
+				let lista=document.createElement('li');
+				lista.innerHTML=drink[0][`strIngredient${i}`];
+				document.getElementById('drinkName').appendChild(lista);
+			}
+		});
+
+	});
+
+};
+
+</script>
+</body>
+</html>	
